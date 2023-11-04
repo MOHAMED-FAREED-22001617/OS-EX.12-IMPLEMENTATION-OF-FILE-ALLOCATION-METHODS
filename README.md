@@ -1,186 +1,124 @@
-# OS-EX.11-IMPLEMENTATION-OF-DISK-SCHEDULING-ALGORITHMS
+# OS-EX.12-IMPLEMENTATION-OF-FILE-ALLOCATION-METHODS
 
 ## AIM:
-To write a program for the first come first serve method of disc scheduling.
+To implement file management using sequential list.
 
-## DESCRIPTION:
-Disk scheduling is schedule I/O requests arriving for the disk.
+## ALGORITHM:
+Step 1: Start the program.
 
-It is important because: -
+Step 2: Get the number of memory partition and their sizes.
 
-Multiple I/O requests may arrive by different processes and only one I/O request can be served at a time by the disk controller. Thus other I/O requests need to wait in the waiting queue and need to be scheduled.
+Step 3: Get the number of processes and values of block size for each process.
 
-Two or more request may be far from each other so can result in greater disk head movement. Hard drives are one of the slowest parts of the computer system and thus need to be accessed in an efficient manner
+Step 4: First fit algorithm searches all the entire memory block until a hole which is big enough is encountered. It allocates that memory block for the requesting process.
 
-FCFS is the simplest of all the Disk Scheduling Algorithms. In FCFS, the requests are addressed in the order they arrive in the disk queue.
+Step 5: Best-fit algorithm searches the memory blocks for the smallest hole which can be allocated to requesting process and allocates it.
+
+Step 6: Worst fit algorithm searches the memory blocks for the largest hole and allocates it to the process.
+
+Step 7: Analyses all the three memory management techniques and display the best algorithm which utilizes the memory resources effectively and efficiently.
+
+Step 8: Stop the program.
 
 ## PROGRAM:
 ```
-
-#include <stdio.h>
-#include <stdlib.h>
-int main()
+#include < stdio.h>
+#include<conio.h>
+void main()
 {
-int RQ[100],i,n,TotalHeadMoment=0,initial;
-printf ("Enter the number of Requests\n");
-scanf("%d",&n);
-printf("Enter the Requests sequence\n");
-for(i=0;i<n;i++)
-scanf("%d",&RQ[i]);
-printf("Enter initial head position\n");
-scanf("%d",&initial);
-for(i=0;i<n;i++)
+int f[50], i, st, len, j, c, k, count = 0;
+clrscr();
+for(i=0;i<50;i++)
+f[i]=0;
+printf("Files Allocated are : \n");
+x: count=0;
+printf(“Enter starting block and length of files: ”);
+scanf("%d%d", &st,&len);
+for(k=st;k<(st+len);k++)
+if(f[k]==0)
+count++;
+if(len==count)
 {
-TotalHeadMoment=TotalHeadMoment+abs(RQ[i]-initial);
-initial=RQ[i];
+for(j=st;j<(st+len);j++)
+if(f[j]==0)
+{
+f[j]=1;
+printf("%d\t%d\n",j,f[j]);
 }
-printf("Total head moment is %d",TotalHeadMoment);
-return 0;
+if(j!=(st+len-1))
+printf(” The file is allocated to disk\n");
+}
+else
+printf(” The file is not allocated \n");
+printf("Do you want to enter more file(Yes - 1/No - 0)");
+scanf("%d", &c);
+if(c==1)
+goto x;
+else
+exit();
+getch();
 }
 ```
 
 ## OUTPUT:
-![image](https://github.com/Thirukaalathessvarar-S/OS-EX.11-IMPLEMENTATION-OF-DISK-SCHEDULING-ALGORITHMS/assets/121166390/9c7022da-f80f-4e4f-99ab-d5b04f2c8975)
+![image](https://github.com/Thirukaalathessvarar-S/OS-EX.12-IMPLEMENTATION-OF-FILE-ALLOCATION-METHODS/assets/121166390/8df6dd8d-948b-401c-be09-642096cea935)
 
 ## RESULT:
-Thus the implementation of the program for first come first serve disc scheduling has been successfully executed.
+Thus, file management using sequential list is implemented successfully.
 
 
-# SHORTEST SEEK TIME FIRST
+# LINKED ALLOCATION
 
-## AIM:
-To write a program for the first come first serve method of disc scheduling.
+## AIM
+To implement file management using indexed list.
 
 ## DESCRIPTION:
-Shortest seek time first (SSTF) algorithm
+1.Linked allocation solves all problems of contiguous allocation. With linked allocation, each file is a linked list of disk blocks; the disk blocks may be scattered anywhere on the disk. The directory contains a pointer to the first and last blocks of the file.
 
-Shortest seek time first (SSTF) algorithm selects the disk I/O request which requires the least disk arm movement from its current position regardless of the direction. It reduces the total seek time as compared to FCFS.
+2.Each block contains a pointer to the next block. These pointers are not made available to the user. Thus, if each block is 512 bytes, and a disk address (the pointer) requires 4 bytes, then the user sees blocks of 508bytes.
+
+3.To create a new file, we simply create a new entry in the directory. With linked allocation, each directory entry has a pointer to the first disk block of thefile.
+
+4.This pointer is initialized to nil (the end-of-list pointer value) to signify an empty file. The size field is also set to 0. A write to the file causes a free block to be found via the free-space-management system, and this new block is then written to, and is linked to the end of thefile.
+
+5.To read a file, we simply read blocks by following the pointers from block to block. There is no external fragmentation with linked allocation, and any free blockon the free-space list can be used to satisfy arequest.
+
+6.The size of a file does not need to be declared when that file is created. A file can continue to grow as long as free blocks areavailable.
+
+7.Consequently, it is never necessary to compact diskspace.
 
 ## PROGRAM
 ```
 #include<stdio.h>
-#include<stdlib.h>
 int main()
 {
-int RQ[100],i,n,TotalHeadMoment=0,initial,count=0;
-printf("Enter the number of Requests\n");
+int n,m[20],i,j,ib[20],b[20][20];
+printf("Enter no. of files:");
 scanf("%d",&n);
-printf("Enter the Requests sequence\n");
 for(i=0;i<n;i++)
-scanf("%d",&RQ[i]);
-printf("Enter initial head position\n");
-scanf("%d",&initial);
-while(count!=n)
-{
-int min=1000,d,index;
+{ 
+printf("Enter index block :",i+1); 
+scanf("%d",&ib[i]);
+printf("Enter blocks occupied by file%d:",i+1); 
+scanf("%d",&m[i]);
+printf("enter blocks of file%d:",i+1); 
+for(j=0;j<m[i];j++) 
+scanf("%d",&b[i][j]);
+} printf("\nFile\t index\tlength\n"); 
+for(i=0;i<n;i++) 
+printf("%d\t%d\t%d\n",i+1,ib[i],m[i]); 
+printf("blocks occupiedare:"); 
 for(i=0;i<n;i++)
-{
-d=abs(RQ[i]-initial);
-if(min>d)
-{
-min=d;
-index=i;
+{ printf("fileno%d",i+1);
+for(j=0;j<m[i];j++)
+printf("\t%d--->%d\n",ib[i],b[i][j]);
+printf("\n");
 }
-}
-TotalHeadMoment=TotalHeadMoment+min;
-initial=RQ[index];
-RQ[index]=1000;
-count++;
-}
-printf("Total head movement is %d",TotalHeadMoment);
-return 0;
 }
 ```
 
 ## OUTPUT
-![image](https://github.com/Thirukaalathessvarar-S/OS-EX.11-IMPLEMENTATION-OF-DISK-SCHEDULING-ALGORITHMS/assets/121166390/3fa59085-4b79-4363-a55f-e5d0da2d453e)
+![image](https://github.com/Thirukaalathessvarar-S/OS-EX.12-IMPLEMENTATION-OF-FILE-ALLOCATION-METHODS/assets/121166390/e501e45a-0dfd-43ca-8c0d-180ca1bf03a0)
 
 ## RESULT
-Thus the implementation of the program for SCAN disc scheduling has been successfully executed.
-
-
-# LOOK
-## AIM:
-To write a program for the first come first serve method of disc scheduling.
-
-## DESCRIPTION:
-Look
-
-It is similar to the SCAN disk scheduling algorithm except for the difference that the disk arm in spite of going to the end of the disk goes only to the last request to be serviced in front of the head and then reverses its direction from there only. Thus, it prevents the extra delay which occurred due to unnecessary traversal to the end of the disk.
-
-## PROGRAM:
-```
-#include<stdio.h>
-#include<stdlib.h>
-int main()
-{
-int RQ[100],i,j,n,TotalHeadMoment=0,initial,size,move;
-printf("Enter the number of Requests\n");
-scanf("%d",&n);
-printf("Enter the Requests sequence\n");
-for(i=0;i<n;i++)
-scanf("%d",&RQ[i]);
-printf("Enter initial head position\n");
-scanf("%d",&initial);
-printf("Enter total disk size\n");
-scanf("%d",&size);
-printf("Enter the head movement direction for high 1 and for low 0\n");
-scanf("%d",&move);
-for(i=0;i<n;i++)
-{
-for(j=0;j<n-i-1;j++)
-{
-if(RQ[j]>RQ[j+1])
-{
-int temp;
-temp=RQ[j];
-RQ[j]=RQ[j+1];
-RQ[j+1]=temp;
-}
-}
-}
-int index;
-for(i=0;i<n;i++)
-{
-if(initial<RQ[i])
-{
-index=i;
-break;
-}
-}
-if(move==1)
-{
-for(i=index;i<n;i++)
-{
-TotalHeadMoment=TotalHeadMoment+abs(RQ[i]-initial);
-initial=RQ[i];
-}
-for(i=index-1;i>=0;i--)
-{
-TotalHeadMoment=TotalHeadMoment+abs(RQ[i]-initial);
-initial=RQ[i];
-}
-}
-else
-{
-for(i=index-1;i>=0;i--)
-{
-TotalHeadMoment=TotalHeadMoment+abs(RQ[i]-initial);
-initial=RQ[i];
-}
-for(i=index;i<n;i++)
-{
-TotalHeadMoment=TotalHeadMoment+abs(RQ[i]-initial);
-initial=RQ[i];
-}
-}
-printf("Total head movement is %d",TotalHeadMoment);
-return 0;
-}
-```
-
-## OUTPUT
-![image](https://github.com/Thirukaalathessvarar-S/OS-EX.11-IMPLEMENTATION-OF-DISK-SCHEDULING-ALGORITHMS/assets/121166390/e5d01987-1b59-4222-aac3-bc8630b160fc)
-
-## RESULT
-Thus the implementation of the program for LOOK disc scheduling has been successfully executed.
+Thus, file management using linked list is implemented successfully.
